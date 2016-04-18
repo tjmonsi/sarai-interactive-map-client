@@ -11,6 +11,7 @@ class SaraiMap extends React.Component {
     this.initializeEEMap = this.initializeEEMap.bind(this);
     this.getEEMap = this.getEEMap.bind(this);
     this.handleNDVI = this.handleNDVI.bind(this);
+    this.handleRainfall = this.handleRainfall.bind(this);
     this.google = null;
     this.map = null;
     this.mapContainer = null;
@@ -101,12 +102,12 @@ class SaraiMap extends React.Component {
       this.dateMonth.value : '02';
     const day = this.dateDay &&
       this.dateDay.value &&
-      this.dateMonth.value.trim() !== '' &&
+      this.dateDay.value.trim() !== '' &&
       !isNaN(parseFloat(this.dateDay.value)) &&
       parseFloat(this.dateDay.value) >= 1 &&
       parseFloat(this.dateDay.value) <= 31 ?
       this.dateDay.value : '01';
-
+    console.log(this.dateDay.value, parseFloat(this.dateDay.value))
     const date = `${year}-${month}-${day}`;
     const range = this.dateRange &&
       this.dateRange.value &&
@@ -142,15 +143,138 @@ class SaraiMap extends React.Component {
     this.map.overlayMapTypes.push(this.mapLayer);
     // console.log(this.map.overlayMapTypes);
   }
+  initializeCartoDBMap(obj) {
+    const {query} = this.props;
+    const opacity = query.opacity && !isNaN(parseFloat(query.opacity)) ?
+      parseFloat(query.opacity) : 1;
+    const eeMapOptions = {
+      getTileUrl: (tile, zoom) => {
+        const baseUrl = 'https://saraimaindev.cartodb.com/api/v1/map';
+        let url = [
+          baseUrl,
+          obj.layergroupid,
+          zoom,
+          tile.x,
+          `${tile.y}.png`
+        ].join('/');
+        // url += '?token=' + token;
+        return url;
+      },
+      tileSize: new this.google.maps.Size(256, 256),
+      opacity
+    };
+
+    this.mapLayer = new this.google.maps.ImageMapType(eeMapOptions);
+
+    // Add the EE layer to the map.
+    this.map.overlayMapTypes.clear();
+    // console.log(this.map.overlayMapTypes);
+    this.map.overlayMapTypes.push(this.mapLayer);
+    // console.log(this.map.overlayMapTypes);
+  }
+  getCartoDBMap(crop = this.crop) {
+    const xhr = new XMLHttpRequest();
+    const uri = 'https://saraimaindev.cartodb.com/api/v1/map/';
+   // const uri = `https://saraimaindev.cartodb.com/api/v1/map/named/${crop}-template-map`;
+    const mapConfig = {
+      version: '1.3.1',
+      name: `${crop}-template-map`,
+      auth: {
+        method: 'open'
+      },
+      layers: [ {
+        type: 'cartodb',
+        options: {
+          cartocss_version: '2.1.1',
+          cartocss: `#${crop}
+            {
+              polygon-opacity: 1;
+              line-color: #FFF;
+              line-width: 0;
+              line-opacity: 1;
+            }
+
+            #${crop}[category="S1"] {
+               polygon-fill: #267300;
+            }
+            #${crop}[category="S2 es"] {
+               polygon-fill: #70A800;
+            }
+            #${crop}[category="S2 et"] {
+               polygon-fill: #70A800;
+            }
+            #${crop}[category="S2 ets"] {
+               polygon-fill: #70A800;
+            }
+            #${crop}[category="S2 s"] {
+               polygon-fill: #70A800;
+            }
+            #${crop}[category="S2 t"] {
+               polygon-fill: #70A800;
+            }
+            #${crop}[category="S2 ts"] {
+               polygon-fill: #70A800;
+            }
+            #${crop}[category="S3 e"] {
+               polygon-fill: #D0FF73;
+            }
+            #${crop}[category="S3 et"] {
+               polygon-fill: #D0FF73;
+            }
+            #${crop}[category="S3 t"] {
+               polygon-fill: #D0FF73;
+            }
+            #${crop} {
+               polygon-fill: #D0FF73;
+            }`,
+          // cartocss: `#rice
+          //   {
+          //     polygon-opacity: 1;
+          //     line-color: #FFF;
+          //     line-width: 0;
+          //     line-opacity: 1;
+          //   }
+
+          //   #rice[category="Highly Suitable"] {
+          //     polygon-fill: #5eff00;
+          //   }
+          //   #rice[category="Marginally Suitable"] {
+          //     polygon-fill: #a88401;
+          //   }
+          //   #rice[category="Moderately Suitable"] {
+          //     polygon-fill: #229A00;
+          //   }`,
+          sql: `select * from ${crop}`
+        }
+      } ]
+    };
+
+    const mapOptionString = JSON.stringify(mapConfig);
+    xhr.open('POST', uri, true);
+    xhr.setRequestHeader('Content-type','application/json; charset=utf-8');
+    // xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
+    // xhr.setRequestHeader('Access-Control-Allow-Headers', '*');
+
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        const obj = JSON.parse(xhr.responseText);
+        console.log(obj);
+        this.initializeCartoDBMap(obj);
+      } else if (xhr.status !== 200) {
+        console.log('Not 200');
+      }
+    };
+    // xhr.send('{}');
+    xhr.send(mapOptionString);
+  }
   getEEMap(p) {
     const api = p === 'ndvi' ? 'landsat' : 'chirps';
     const {query} = this.props;
-    console.log(query.date);
     const date = query.date && query.date !== '' ? query.date : this.date;
     const range = query.range && !isNaN(parseFloat(query.range)) ? query.range : this.range;
     const q = qs.stringify({date, range});
-    var xhr = new XMLHttpRequest();
-    var uri = `https://google-earth-engine-sarai-tjmonsi1.c9users.io/${api}?${q}`;
+    const xhr = new XMLHttpRequest();
+    const uri = `https://google-earth-engine-sarai-tjmonsi1.c9users.io/${api}?${q}`;
     xhr.open('GET', uri, true);
     xhr.onreadystatechange = () => {
       if (xhr.readyState === 4 && xhr.status === 200) {
@@ -166,6 +290,8 @@ class SaraiMap extends React.Component {
   renderMap() {
     const {query} = this.props;
     const {page} = query;
+    const crop = query.crop && query.crop.trim() !== '' ? query.crop : this.crop;
+    console.log(crop)
     const opacity = query.opacity && !isNaN(parseFloat(query.opacity)) ?
       parseFloat(query.opacity) : 1;
 
@@ -179,9 +305,12 @@ class SaraiMap extends React.Component {
     } else {
       p = 'ndvi';
     }
+    console.log(p);
 
     if (p === 'ndvi' || p === 'rainfall') {
       this.getEEMap(p);
+    } else if (p === 'suitability') {
+      this.getCartoDBMap(crop);
     }
   }
   componentDidMount() {
@@ -372,6 +501,40 @@ class SaraiMap extends React.Component {
       </div>
     );
   }
+  renderSuitability() {
+    const {query} = this.props;
+    const {crop} = query;
+    return (
+      <div className="mdl-cell mdl-cell--12-col">
+        <div
+          className="mdl-grid mdl-grid--no-spacing"
+        >
+          <div className="mdl-cell mdl-cell--12-col option-title">
+            <h5>{`Suitability Map: ${crop}`}</h5>
+          </div>
+          <div className="mdl-cell mdl-cell--12-col suitability-legend">
+            &nbsp;
+          </div>
+          <div className="mdl-cell mdl-cell--12-col suitability-names">
+            <div className="mdl-grid mdl-grid--no-spacing">
+              <div className="mdl-cell mdl-cell--3-col mdl-cell--2-col-tablet mdl-cell--2-phone">
+                Less Suitable to Plant
+              </div>
+              <div className="mdl-cell mdl-cell--3-col mdl-cell--2-col-tablet mdl-cell--2-phone
+                mdl-cell--6-offset mdl-cell--4-offset-tablet"
+              >
+                More Suitable to Plant
+              </div>
+            </div>
+          </div>
+          <div className="mdl-cell mdl-cell--12-col">
+            {'Layer Opacity: '}<br/>
+            {this.renderSlider()}
+          </div>
+        </div>
+      </div>
+    );
+  }
   renderRainfall() {
     return (
       <div className="mdl-cell mdl-cell--12-col">
@@ -379,7 +542,7 @@ class SaraiMap extends React.Component {
           className="mdl-grid mdl-grid--no-spacing"
         >
           <div className="mdl-cell mdl-cell--12-col option-title">
-            <h5>{'Normalized Difference Vegetation Index (NDVI)'}</h5>
+            <h5>{'Rainfall'}</h5>
           </div>
           <div className="mdl-cell mdl-cell--12-col rainfall-legend">
             &nbsp;
@@ -405,7 +568,7 @@ class SaraiMap extends React.Component {
             <button
               className="mdl-button mdl-js-button mdl-button--raised
                 mdl-js-ripple-effect"
-              onClick={this.handleNDVI}
+              onClick={this.handleRainfall}
             >
               {'Filter'}
             </button>
@@ -448,7 +611,7 @@ class SaraiMap extends React.Component {
             <button
               className="mdl-button mdl-js-button mdl-button--raised
                 mdl-js-ripple-effect"
-              onClick={this.handleRainfall}
+              onClick={this.handleNDVI}
             >
               {'Filter'}
             </button>
@@ -471,6 +634,8 @@ class SaraiMap extends React.Component {
       return this.renderNDVI();
     } else if (p === 'rainfall') {
       return this.renderRainfall();
+    } else if (p === 'suitability') {
+      return this.renderSuitability();
     }
   }
   render() {

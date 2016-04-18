@@ -112,7 +112,7 @@
 	exports.i(__webpack_require__(5), "");
 
 	// module
-	exports.push([module.id, ".option-title {\n  margin-top: 0px;\n}\n\n.option-title h5 {\n  margin-top: 0px;\n}\n\n.date-year-class, .date-month-class, .date-day-class {\n  margin-top: 0px;\n  padding-top: 0px;\n  margin-bottom: 0px;\n  padding-bottom: 0px;\n}\n\n.date-year-class label, .date-month-class label, .date-day-class label {\n  top: 0px;\n}\n\n.ndvi-legend {\n  background: #FFFFFF;\n  /* For browsers that do not support gradients */\n  /* For Safari 5.1 to 6.0 */\n  /* For Opera 11.1 to 12.0 */\n  /* For Firefox 3.6 to 15 */\n  background: linear-gradient(to right, #FFFFFF, #004400);\n  /* Standard syntax */\n  height: 20px;\n}\n\n.rainfall-legend {\n  background: #FFFFFF;\n  /* For browsers that do not support gradients */\n  /* For Safari 5.1 to 6.0 */\n  /* For Opera 11.1 to 12.0 */\n  /* For Firefox 3.6 to 15 */\n  background: linear-gradient(to right, #ff0000, #ff6900, #ffff00, #62ff00, #00ff00);\n  /* Standard syntax */\n  height: 20px;\n}\n\n.date-year-class {\n  margin-left: 0px;\n}\n\n.date-day-class {\n  margin-right: 0px;\n}\n", ""]);
+	exports.push([module.id, ".option-title {\n  margin-top: 0px;\n}\n\n.option-title h5 {\n  margin-top: 0px;\n}\n\n.date-year-class, .date-month-class, .date-day-class {\n  margin-top: 0px;\n  padding-top: 0px;\n  margin-bottom: 0px;\n  padding-bottom: 0px;\n}\n\n.date-year-class label, .date-month-class label, .date-day-class label {\n  top: 0px;\n}\n\n.ndvi-legend {\n  background: #FFFFFF;\n  /* For browsers that do not support gradients */\n  /* For Safari 5.1 to 6.0 */\n  /* For Opera 11.1 to 12.0 */\n  /* For Firefox 3.6 to 15 */\n  background: linear-gradient(to right, #FFFFFF, #004400);\n  /* Standard syntax */\n  height: 20px;\n}\n\n.rainfall-legend {\n  background: #FFFFFF;\n  /* For browsers that do not support gradients */\n  /* For Safari 5.1 to 6.0 */\n  /* For Opera 11.1 to 12.0 */\n  /* For Firefox 3.6 to 15 */\n  background: linear-gradient(to right, #ff0000, #ff6900, #ffff00, #62ff00, #00ff00);\n  /* Standard syntax */\n  height: 20px;\n}\n\n.suitability-legend {\n  background: #D0FF73;\n  /* For browsers that do not support gradients */\n  /* For Safari 5.1 to 6.0 */\n  /* For Opera 11.1 to 12.0 */\n  /* For Firefox 3.6 to 15 */\n  background: linear-gradient(to right, #D0FF73, #70A800, #267300);\n  /* Standard syntax */\n  height: 20px;\n}\n\n.date-year-class {\n  margin-left: 0px;\n}\n\n.date-day-class {\n  margin-right: 0px;\n}\n", ""]);
 
 	// exports
 
@@ -31416,6 +31416,7 @@
 	    _this.initializeEEMap = _this.initializeEEMap.bind(_this);
 	    _this.getEEMap = _this.getEEMap.bind(_this);
 	    _this.handleNDVI = _this.handleNDVI.bind(_this);
+	    _this.handleRainfall = _this.handleRainfall.bind(_this);
 	    _this.google = null;
 	    _this.map = null;
 	    _this.mapContainer = null;
@@ -31479,8 +31480,8 @@
 
 	      var year = this.dateYear && this.dateYear.value && this.dateYear.value.trim() !== '' && !isNaN(parseFloat(this.dateYear.value)) && parseFloat(this.dateYear.value) >= 1980 && parseFloat(this.dateYear.value) <= 3000 ? this.dateYear.value : '2016';
 	      var month = this.dateMonth && this.dateMonth.value && this.dateMonth.value.trim() !== '' && !isNaN(parseFloat(this.dateMonth.value)) && parseFloat(this.dateMonth.value) >= 1 && parseFloat(this.dateMonth.value) <= 12 ? this.dateMonth.value : '02';
-	      var day = this.dateDay && this.dateDay.value && this.dateMonth.value.trim() !== '' && !isNaN(parseFloat(this.dateDay.value)) && parseFloat(this.dateDay.value) >= 1 && parseFloat(this.dateDay.value) <= 31 ? this.dateDay.value : '01';
-
+	      var day = this.dateDay && this.dateDay.value && this.dateDay.value.trim() !== '' && !isNaN(parseFloat(this.dateDay.value)) && parseFloat(this.dateDay.value) >= 1 && parseFloat(this.dateDay.value) <= 31 ? this.dateDay.value : '01';
+	      console.log(this.dateDay.value, parseFloat(this.dateDay.value));
 	      var date = year + '-' + month + '-' + day;
 	      var range = this.dateRange && this.dateRange.value && this.dateRange.value.trim() !== '' && !isNaN(parseFloat(this.dateRange.value)) && parseFloat(this.dateRange.value) <= 21 ? this.dateRange.value : '15';
 	      var q = _qs2.default.stringify(Object.assign({}, query, {
@@ -31515,14 +31516,99 @@
 	      // console.log(this.map.overlayMapTypes);
 	    }
 	  }, {
+	    key: 'initializeCartoDBMap',
+	    value: function initializeCartoDBMap(obj) {
+	      var query = this.props.query;
+
+	      var opacity = query.opacity && !isNaN(parseFloat(query.opacity)) ? parseFloat(query.opacity) : 1;
+	      var eeMapOptions = {
+	        getTileUrl: function getTileUrl(tile, zoom) {
+	          var baseUrl = 'https://saraimaindev.cartodb.com/api/v1/map';
+	          var url = [baseUrl, obj.layergroupid, zoom, tile.x, tile.y + '.png'].join('/');
+	          // url += '?token=' + token;
+	          return url;
+	        },
+	        tileSize: new this.google.maps.Size(256, 256),
+	        opacity: opacity
+	      };
+
+	      this.mapLayer = new this.google.maps.ImageMapType(eeMapOptions);
+
+	      // Add the EE layer to the map.
+	      this.map.overlayMapTypes.clear();
+	      // console.log(this.map.overlayMapTypes);
+	      this.map.overlayMapTypes.push(this.mapLayer);
+	      // console.log(this.map.overlayMapTypes);
+	    }
+	  }, {
+	    key: 'getCartoDBMap',
+	    value: function getCartoDBMap() {
+	      var _this2 = this;
+
+	      var crop = arguments.length <= 0 || arguments[0] === undefined ? this.crop : arguments[0];
+
+	      var xhr = new XMLHttpRequest();
+	      var uri = 'https://saraimaindev.cartodb.com/api/v1/map/';
+	      // const uri = `https://saraimaindev.cartodb.com/api/v1/map/named/${crop}-template-map`;
+	      var mapConfig = {
+	        version: '1.3.1',
+	        name: crop + '-template-map',
+	        auth: {
+	          method: 'open'
+	        },
+	        layers: [{
+	          type: 'cartodb',
+	          options: {
+	            cartocss_version: '2.1.1',
+	            cartocss: '#' + crop + '\n            {\n              polygon-opacity: 1;\n              line-color: #FFF;\n              line-width: 0;\n              line-opacity: 1;\n            }\n\n            #' + crop + '[category="S1"] {\n               polygon-fill: #267300;\n            }\n            #' + crop + '[category="S2 es"] {\n               polygon-fill: #70A800;\n            }\n            #' + crop + '[category="S2 et"] {\n               polygon-fill: #70A800;\n            }\n            #' + crop + '[category="S2 ets"] {\n               polygon-fill: #70A800;\n            }\n            #' + crop + '[category="S2 s"] {\n               polygon-fill: #70A800;\n            }\n            #' + crop + '[category="S2 t"] {\n               polygon-fill: #70A800;\n            }\n            #' + crop + '[category="S2 ts"] {\n               polygon-fill: #70A800;\n            }\n            #' + crop + '[category="S3 e"] {\n               polygon-fill: #D0FF73;\n            }\n            #' + crop + '[category="S3 et"] {\n               polygon-fill: #D0FF73;\n            }\n            #' + crop + '[category="S3 t"] {\n               polygon-fill: #D0FF73;\n            }\n            #' + crop + ' {\n               polygon-fill: #D0FF73;\n            }',
+	            // cartocss: `#rice
+	            //   {
+	            //     polygon-opacity: 1;
+	            //     line-color: #FFF;
+	            //     line-width: 0;
+	            //     line-opacity: 1;
+	            //   }
+
+	            //   #rice[category="Highly Suitable"] {
+	            //     polygon-fill: #5eff00;
+	            //   }
+	            //   #rice[category="Marginally Suitable"] {
+	            //     polygon-fill: #a88401;
+	            //   }
+	            //   #rice[category="Moderately Suitable"] {
+	            //     polygon-fill: #229A00;
+	            //   }`,
+	            sql: 'select * from ' + crop
+	          }
+	        }]
+	      };
+
+	      var mapOptionString = JSON.stringify(mapConfig);
+	      xhr.open('POST', uri, true);
+	      xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+	      // xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
+	      // xhr.setRequestHeader('Access-Control-Allow-Headers', '*');
+
+	      xhr.onreadystatechange = function () {
+	        if (xhr.readyState === 4 && xhr.status === 200) {
+	          var obj = JSON.parse(xhr.responseText);
+	          console.log(obj);
+	          _this2.initializeCartoDBMap(obj);
+	        } else if (xhr.status !== 200) {
+	          console.log('Not 200');
+	        }
+	      };
+	      // xhr.send('{}');
+	      xhr.send(mapOptionString);
+	    }
+	  }, {
 	    key: 'getEEMap',
 	    value: function getEEMap(p) {
-	      var _this2 = this;
+	      var _this3 = this;
 
 	      var api = p === 'ndvi' ? 'landsat' : 'chirps';
 	      var query = this.props.query;
 
-	      console.log(query.date);
 	      var date = query.date && query.date !== '' ? query.date : this.date;
 	      var range = query.range && !isNaN(parseFloat(query.range)) ? query.range : this.range;
 	      var q = _qs2.default.stringify({ date: date, range: range });
@@ -31533,7 +31619,7 @@
 	        if (xhr.readyState === 4 && xhr.status === 200) {
 	          var obj = JSON.parse(xhr.responseText);
 	          console.log(obj);
-	          _this2.initializeEEMap(obj.mapId, obj.mapToken);
+	          _this3.initializeEEMap(obj.mapId, obj.mapToken);
 	        } else if (xhr.status !== 200) {
 	          console.log('Not 200');
 	        }
@@ -31546,6 +31632,8 @@
 	      var query = this.props.query;
 	      var page = query.page;
 
+	      var crop = query.crop && query.crop.trim() !== '' ? query.crop : this.crop;
+	      console.log(crop);
 	      var opacity = query.opacity && !isNaN(parseFloat(query.opacity)) ? parseFloat(query.opacity) : 1;
 
 	      if (componentHandler && this.opacitySlider) {
@@ -31558,15 +31646,18 @@
 	      } else {
 	        p = 'ndvi';
 	      }
+	      console.log(p);
 
 	      if (p === 'ndvi' || p === 'rainfall') {
 	        this.getEEMap(p);
+	      } else if (p === 'suitability') {
+	        this.getCartoDBMap(crop);
 	      }
 	    }
 	  }, {
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      var _this3 = this;
+	      var _this4 = this;
 
 	      var _mapObj = this.mapObj;
 	      var zoom = _mapObj.zoom;
@@ -31576,15 +31667,15 @@
 	      _googleMaps2.default.KEY = 'AIzaSyBm4iBwV7u1g3xdXV9sX-y96_23aJpd4m8';
 	      _googleMaps2.default.load(function (google) {
 	        if (google) {
-	          _this3.google = google;
-	          _this3.map = new _this3.google.maps.Map(_this3.mapContainer, {
+	          _this4.google = google;
+	          _this4.map = new _this4.google.maps.Map(_this4.mapContainer, {
 	            zoom: zoom,
 	            center: { lat: lat, lng: lng }
 	          });
 
-	          _this3.map.controls[google.maps.ControlPosition.LEFT_TOP].push(_this3.mapControls);
+	          _this4.map.controls[google.maps.ControlPosition.LEFT_TOP].push(_this4.mapControls);
 	          // this.map.controls[google.maps.ControlPosition.RIGHT_TOP].push(this.namer);
-	          _this3.renderMap();
+	          _this4.renderMap();
 	        }
 	      });
 	    }
@@ -31598,14 +31689,14 @@
 	  }, {
 	    key: 'renderSlider',
 	    value: function renderSlider() {
-	      var _this4 = this;
+	      var _this5 = this;
 
 	      var opacitySlider = function opacitySlider(c) {
-	        _this4.opacitySlider = c;
+	        _this5.opacitySlider = c;
 	      };
 	      var handleChange = function handleChange(e) {
-	        console.log(_this4.opacitySlider.value);
-	        _this4.mapLayer.setOpacity(_this4.opacitySlider.value / 100);
+	        console.log(_this5.opacitySlider.value);
+	        _this5.mapLayer.setOpacity(_this5.opacitySlider.value / 100);
 	      };
 	      return _react2.default.createElement('input', {
 	        className: 'mdl-slider mdl-js-slider',
@@ -31620,7 +31711,7 @@
 	  }, {
 	    key: 'renderNDVIDay',
 	    value: function renderNDVIDay(page) {
-	      var _this5 = this;
+	      var _this6 = this;
 
 	      var query = this.props.query;
 	      var date = query.date;
@@ -31630,9 +31721,9 @@
 	      var day = dateArr[2] && !isNaN(parseFloat(dateArr[2])) ? dateArr[2] : 1;
 
 	      var dayRef = function dayRef(c) {
-	        _this5.dateDay = c;
-	        if (_this5.dateDay) {
-	          _this5.dateDay.value = day;
+	        _this6.dateDay = c;
+	        if (_this6.dateDay) {
+	          _this6.dateDay.value = day;
 	        }
 	      };
 	      var pattern = page === 'ndvi' ? '(([0-2][0-9])|(3[0-1]))' : '([0-2](1|6))';
@@ -31665,7 +31756,7 @@
 	  }, {
 	    key: 'renderDate',
 	    value: function renderDate(page) {
-	      var _this6 = this;
+	      var _this7 = this;
 
 	      var query = this.props.query;
 	      var date = query.date;
@@ -31677,15 +31768,15 @@
 	      // const day = dateArr[2] && !isNaN(parseFloat(dateArr[2])) ? dateArr[2] : 1;
 
 	      var yearRef = function yearRef(c) {
-	        _this6.dateYear = c;
-	        if (_this6.dateYear) {
-	          _this6.dateYear.value = year;
+	        _this7.dateYear = c;
+	        if (_this7.dateYear) {
+	          _this7.dateYear.value = year;
 	        }
 	      };
 	      var monthRef = function monthRef(c) {
-	        _this6.dateMonth = c;
-	        if (_this6.dateMonth) {
-	          _this6.dateMonth.value = month;
+	        _this7.dateMonth = c;
+	        if (_this7.dateMonth) {
+	          _this7.dateMonth.value = month;
 	        }
 	      };
 
@@ -31753,15 +31844,15 @@
 	  }, {
 	    key: 'renderRange',
 	    value: function renderRange() {
-	      var _this7 = this;
+	      var _this8 = this;
 
 	      var query = this.props.query;
 	      var range = query.range;
 
 	      var rangeRef = function rangeRef(c) {
-	        _this7.dateRange = c;
-	        if (_this7.dateRange) {
-	          _this7.dateRange.value = range && !isNaN(parseFloat(range)) ? range : _this7.range;
+	        _this8.dateRange = c;
+	        if (_this8.dateRange) {
+	          _this8.dateRange.value = range && !isNaN(parseFloat(range)) ? range : _this8.range;
 	        }
 	      };
 	      return _react2.default.createElement(
@@ -31796,6 +31887,63 @@
 	      );
 	    }
 	  }, {
+	    key: 'renderSuitability',
+	    value: function renderSuitability() {
+	      var query = this.props.query;
+	      var crop = query.crop;
+
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'mdl-cell mdl-cell--12-col' },
+	        _react2.default.createElement(
+	          'div',
+	          {
+	            className: 'mdl-grid mdl-grid--no-spacing'
+	          },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'mdl-cell mdl-cell--12-col option-title' },
+	            _react2.default.createElement(
+	              'h5',
+	              null,
+	              'Suitability Map: ' + crop
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'mdl-cell mdl-cell--12-col suitability-legend' },
+	            ' '
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'mdl-cell mdl-cell--12-col suitability-names' },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'mdl-grid mdl-grid--no-spacing' },
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'mdl-cell mdl-cell--3-col mdl-cell--2-col-tablet mdl-cell--2-phone' },
+	                'Less Suitable to Plant'
+	              ),
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'mdl-cell mdl-cell--3-col mdl-cell--2-col-tablet mdl-cell--2-phone mdl-cell--6-offset mdl-cell--4-offset-tablet'
+	                },
+	                'More Suitable to Plant'
+	              )
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'mdl-cell mdl-cell--12-col' },
+	            'Layer Opacity: ',
+	            _react2.default.createElement('br', null),
+	            this.renderSlider()
+	          )
+	        )
+	      );
+	    }
+	  }, {
 	    key: 'renderRainfall',
 	    value: function renderRainfall() {
 	      return _react2.default.createElement(
@@ -31812,7 +31960,7 @@
 	            _react2.default.createElement(
 	              'h5',
 	              null,
-	              'Normalized Difference Vegetation Index (NDVI)'
+	              'Rainfall'
 	            )
 	          ),
 	          _react2.default.createElement(
@@ -31854,7 +32002,7 @@
 	              'button',
 	              {
 	                className: 'mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect',
-	                onClick: this.handleNDVI
+	                onClick: this.handleRainfall
 	              },
 	              'Filter'
 	            )
@@ -31922,7 +32070,7 @@
 	              'button',
 	              {
 	                className: 'mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect',
-	                onClick: this.handleRainfall
+	                onClick: this.handleNDVI
 	              },
 	              'Filter'
 	            )
@@ -31947,12 +32095,14 @@
 	        return this.renderNDVI();
 	      } else if (p === 'rainfall') {
 	        return this.renderRainfall();
+	      } else if (p === 'suitability') {
+	        return this.renderSuitability();
 	      }
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this8 = this;
+	      var _this9 = this;
 
 	      var style = {
 	        width: '100%',
@@ -31970,10 +32120,10 @@
 	        overflow: 'auto'
 	      };
 	      var map = function map(c) {
-	        _this8.mapContainer = c;
+	        _this9.mapContainer = c;
 	      };
 	      var controls = function controls(c) {
-	        _this8.mapControls = c;
+	        _this9.mapControls = c;
 	      };
 	      return _react2.default.createElement(
 	        'div',
