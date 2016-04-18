@@ -52,3 +52,17 @@
 .date-day-class {
   margin-right: 0px;
 }
+
+.crop-item {
+  img {
+    height: 50px;
+    width: 50px;
+  }
+  a {
+    color: black;
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+}

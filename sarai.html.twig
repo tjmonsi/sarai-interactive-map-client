@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ app.request.basepath }}/dependencies/bootstrap/dist/css/bootstrap.css" />
+<link rel="stylesheet" href="{{ app.request.basepath }}/dependencies/iCheck/skins/flat/green.css" />
+<link rel="stylesheet" href="{{ app.request.basepath }}/css/icheck/high.css" />
+<link rel="stylesheet" href="{{ app.request.basepath }}/css/icheck/moderate.css" />
+<link rel="stylesheet" href="{{ app.request.basepath }}/css/icheck/marginal.css" />
+{% endblock stylesheets %}
+
+{% block theme_body %}
+
+        <div class="sarai-header">
+          
+            <!-- Left Side: Logo & Site Name -->
+            <div style="height: 75px; float: left">
+              <div style="float: left">
+                <a href="#">
+                    <img src="{{ app.request.basepath }}/img/ui/sarai_logo.png" class="img-responsive" style="margin-left: 60px;">
+                  </a>
+              </div>
+            </div>
+
+            <div style="float: left">
+                <h4 style="margin-left:20px; margin-top:15px; color: white;">Smarter Approaches to Reinvigorate Agriculture <br/> as an Indusry in the Philippines BETA</h4>
+            </div>
+        </div>
+
+        <!-- End left side -->
+        <div id="crop-selector" class="crop-selector">
+            <h4 style="text-align:center">SELECT A CROP:</h4>
+            <div class="crop-item" data-crop-name="rice">
+                <img src="{{ app.request.basepath }}/img/ui/crop-icons/rice.png" title="Rice" height="50px;" width="50px;" />
+                <span style="font-size:18px;">RICE</span>
+            </div>
+
+            <div class="crop-item" data-crop-name="corn-wet">
+                <img src="{{ app.request.basepath }}/img/ui/crop-icons/corn.png" title="Corn" height="50px;" width="50px;" />
+                <span style="font-size:18px;">CORN</span>
+            </div class="crop-item">
+
+            <div class="crop-item" data-crop-name="banana">
+                <img src="{{ app.request.basepath }}/img/ui/crop-icons/banana.png" title="Banana" height="50px;" width="50px;" />
+                <span style="font-size:18px;">BANANA</span>
+            </div>
+
+            <div class="crop-item" data-crop-name="coconut">
+                <img src="{{ app.request.basepath }}/img/ui/crop-icons/coconut.png" title="Coconut" height="50px;" width="50px;" />
+                <span style="font-size:18px;">COCONUT</span>
+            </div>
+
+            <div class="crop-item active" data-crop-name="coffee-robusta">
+                <img src="{{ app.request.basepath }}/img/ui/crop-icons/coffee.png" title="Coffee" height="50px;" width="50px;" />
+                <span style="font-size:18px;">COFFEE</span>
+            </div>
+
+            <div class="crop-item" data-crop-name="cacao">
+                <img src="{{ app.request.basepath }}/img/ui/crop-icons/cacao.png" title="Cacao" height="50px;" width="50px;" />
+                <span style="font-size:18px;">CACAO</span>
+            </div>
+        </div>
+
+        <div id="geocoder_wrapper" class="geocoder">
+            <form id="search_area_form" class="form-inline">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="search_area" />
+                </div>
+
+                <button type="submit" class="btn btn-default">Find Area in Map</button>
+            </form>
+        </div>
+		
+        <div id="title_map" class="map-title">
+            <h2 style="    margin-top: 10px; margin-bottom: 10px;">Crop Suitability Maps</h2>
+				Crop Suitability Map shows what crops are best to plant in a <br/>specific area to attain maximum yield.The suitability map follows <br/>the recommendation stated in the book, "Philippine Recommends" <br/>published by PCAARRD.
+        </div>
+
+        <div id="suitability_selector" class="suitability-selector">
+			<h4 style="text-align:center">SELECT SUITABILITY:</h4>
+			<label class="checkbox">
+                <input type="checkbox" class="highly-suitable suitability-level" name="suitability_level" value="1" checked><span style="color: black; padding: 7px;">Highly Suitable</span>
+            </label>
+			<label class="checkbox">
+                <input type="checkbox" class="moderately-suitable suitability-level" name="suitability_level" value="2" checked><span style="color: black; padding: 7px;">Moderately Suitable</span>
+            </label>
+			<label class="checkbox">
+                <input type="checkbox" class="marginally-suitable suitability-level" name="suitability_level" value="3" checked><span style="color: black; padding: 7px;">Marginally Suitable</span>
+            </label>
+		</div>
+
+
+
+{% block content %}{% endblock content %}
+
+{% endblock theme_body %}
+
+{% block js_body %}
+{{ parent() }}
+<script src="{{ app.request.basepath }}/dependencies/jquery/dist/jquery.js"></script>
+<script src="{{ app.request.basepath }}/dependencies/jquery-migrate/jquery-migrate.js"></script>
+<script src="{{ app.request.basepath }}/dependencies/lodash/dist/lodash.js"></script>
+<script src="{{ app.request.basepath }}/dependencies/iCheck/icheck.js"></script>
+<script src="{{ app.request.basepath }}/dependencies/bootstrap/dist/js/bootstrap.js"></script>
+{% endblock js_body %}
+
+

@@ -531,6 +531,36 @@ class SaraiMap extends React.Component {
             {'Layer Opacity: '}<br/>
             {this.renderSlider()}
           </div>
+          <div className="mdl-cell mdl-cell--12-col">
+            <div className="mdl-grid">
+              <div className="crop-item mdl-cell mdl-cell--12-col">
+                <a href="?page=suitability&crop=rice">
+                  <img src="src/images/crop-icons/rice.png" />
+                  <span>RICE</span>
+                </a>
+              </div>
+
+              <div className="crop-item mdl-cell mdl-cell--12-col">
+                <a href="?page=suitability&crop=cornwet">
+                  <img src="src/images/crop-icons/corn.png" />
+                <span>CORN</span>
+                </a>
+              </div>
+
+              <div className="crop-item mdl-cell mdl-cell--12-col">
+                <a href="?page=suitability&crop=banana">
+                  <img src="src/images/crop-icons/banana.png" />
+                  <span>BANANA</span>
+                </a>
+              </div>
+              <div className="crop-item mdl-cell mdl-cell--12-col">
+                <a href="?page=suitability&crop=coconut">
+                  <img src="src/images/crop-icons/coconut.png" />
+                  <span>COCONUT</span>
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -646,9 +676,9 @@ class SaraiMap extends React.Component {
     const styleControls = {
       position: 'absolute',
       width: '30%',
-      maxWidth: 200,
+      maxWidth: 300,
       minWidth: 150,
-      backgroundColor: '#FFFFFF',
+      backgroundColor: 'rgba(255,255,255,0.7)',
       padding: 15,
       marginTop: 10,
       marginLeft: 10,

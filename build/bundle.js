@@ -112,7 +112,7 @@
 	exports.i(__webpack_require__(5), "");
 
 	// module
-	exports.push([module.id, ".option-title {\n  margin-top: 0px;\n}\n\n.option-title h5 {\n  margin-top: 0px;\n}\n\n.date-year-class, .date-month-class, .date-day-class {\n  margin-top: 0px;\n  padding-top: 0px;\n  margin-bottom: 0px;\n  padding-bottom: 0px;\n}\n\n.date-year-class label, .date-month-class label, .date-day-class label {\n  top: 0px;\n}\n\n.ndvi-legend {\n  background: #FFFFFF;\n  /* For browsers that do not support gradients */\n  /* For Safari 5.1 to 6.0 */\n  /* For Opera 11.1 to 12.0 */\n  /* For Firefox 3.6 to 15 */\n  background: linear-gradient(to right, #FFFFFF, #004400);\n  /* Standard syntax */\n  height: 20px;\n}\n\n.rainfall-legend {\n  background: #FFFFFF;\n  /* For browsers that do not support gradients */\n  /* For Safari 5.1 to 6.0 */\n  /* For Opera 11.1 to 12.0 */\n  /* For Firefox 3.6 to 15 */\n  background: linear-gradient(to right, #ff0000, #ff6900, #ffff00, #62ff00, #00ff00);\n  /* Standard syntax */\n  height: 20px;\n}\n\n.suitability-legend {\n  background: #D0FF73;\n  /* For browsers that do not support gradients */\n  /* For Safari 5.1 to 6.0 */\n  /* For Opera 11.1 to 12.0 */\n  /* For Firefox 3.6 to 15 */\n  background: linear-gradient(to right, #D0FF73, #70A800, #267300);\n  /* Standard syntax */\n  height: 20px;\n}\n\n.date-year-class {\n  margin-left: 0px;\n}\n\n.date-day-class {\n  margin-right: 0px;\n}\n", ""]);
+	exports.push([module.id, ".option-title {\n  margin-top: 0px;\n}\n\n.option-title h5 {\n  margin-top: 0px;\n}\n\n.date-year-class, .date-month-class, .date-day-class {\n  margin-top: 0px;\n  padding-top: 0px;\n  margin-bottom: 0px;\n  padding-bottom: 0px;\n}\n\n.date-year-class label, .date-month-class label, .date-day-class label {\n  top: 0px;\n}\n\n.ndvi-legend {\n  background: #FFFFFF;\n  /* For browsers that do not support gradients */\n  /* For Safari 5.1 to 6.0 */\n  /* For Opera 11.1 to 12.0 */\n  /* For Firefox 3.6 to 15 */\n  background: linear-gradient(to right, #FFFFFF, #004400);\n  /* Standard syntax */\n  height: 20px;\n}\n\n.rainfall-legend {\n  background: #FFFFFF;\n  /* For browsers that do not support gradients */\n  /* For Safari 5.1 to 6.0 */\n  /* For Opera 11.1 to 12.0 */\n  /* For Firefox 3.6 to 15 */\n  background: linear-gradient(to right, #ff0000, #ff6900, #ffff00, #62ff00, #00ff00);\n  /* Standard syntax */\n  height: 20px;\n}\n\n.suitability-legend {\n  background: #D0FF73;\n  /* For browsers that do not support gradients */\n  /* For Safari 5.1 to 6.0 */\n  /* For Opera 11.1 to 12.0 */\n  /* For Firefox 3.6 to 15 */\n  background: linear-gradient(to right, #D0FF73, #70A800, #267300);\n  /* Standard syntax */\n  height: 20px;\n}\n\n.date-year-class {\n  margin-left: 0px;\n}\n\n.date-day-class {\n  margin-right: 0px;\n}\n\n.crop-item img {\n  height: 50px;\n  width: 50px;\n}\n\n.crop-item a {\n  color: black;\n  text-decoration: none;\n}\n\n.crop-item a:hover {\n  text-decoration: underline;\n}\n", ""]);
 
 	// exports
 
@@ -31939,6 +31939,70 @@
 	            'Layer Opacity: ',
 	            _react2.default.createElement('br', null),
 	            this.renderSlider()
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'mdl-cell mdl-cell--12-col' },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'mdl-grid' },
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'crop-item mdl-cell mdl-cell--12-col' },
+	                _react2.default.createElement(
+	                  'a',
+	                  { href: '?page=suitability&crop=rice' },
+	                  _react2.default.createElement('img', { src: 'src/images/crop-icons/rice.png' }),
+	                  _react2.default.createElement(
+	                    'span',
+	                    null,
+	                    'RICE'
+	                  )
+	                )
+	              ),
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'crop-item mdl-cell mdl-cell--12-col' },
+	                _react2.default.createElement(
+	                  'a',
+	                  { href: '?page=suitability&crop=cornwet' },
+	                  _react2.default.createElement('img', { src: 'src/images/crop-icons/corn.png' }),
+	                  _react2.default.createElement(
+	                    'span',
+	                    null,
+	                    'CORN'
+	                  )
+	                )
+	              ),
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'crop-item mdl-cell mdl-cell--12-col' },
+	                _react2.default.createElement(
+	                  'a',
+	                  { href: '?page=suitability&crop=banana' },
+	                  _react2.default.createElement('img', { src: 'src/images/crop-icons/banana.png' }),
+	                  _react2.default.createElement(
+	                    'span',
+	                    null,
+	                    'BANANA'
+	                  )
+	                )
+	              ),
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'crop-item mdl-cell mdl-cell--12-col' },
+	                _react2.default.createElement(
+	                  'a',
+	                  { href: '?page=suitability&crop=coconut' },
+	                  _react2.default.createElement('img', { src: 'src/images/crop-icons/coconut.png' }),
+	                  _react2.default.createElement(
+	                    'span',
+	                    null,
+	                    'COCONUT'
+	                  )
+	                )
+	              )
+	            )
 	          )
 	        )
 	      );
@@ -32111,9 +32175,9 @@
 	      var styleControls = {
 	        position: 'absolute',
 	        width: '30%',
-	        maxWidth: 200,
+	        maxWidth: 300,
 	        minWidth: 150,
-	        backgroundColor: '#FFFFFF',
+	        backgroundColor: 'rgba(255,255,255,0.7)',
 	        padding: 15,
 	        marginTop: 10,
 	        marginLeft: 10,
